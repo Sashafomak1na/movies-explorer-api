@@ -24,6 +24,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cors({
   origin: [
+    'http://api.sashka.nomoredomainsmonster.ru',
+    'https://api.sashka.nomoredomainsmonster.ru',
     'http://localhost:3000',
     'localhost:3000'],
   credentials: true,
