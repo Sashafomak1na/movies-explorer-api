@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const validator = require('validator');
 const UnauthorizedError = require('../errors/unauthorizedError');
-const { URL_REGEX } = require('../utils/constants');
+const { PASSWORD_PREFIX, ERROR_EMAIL, ERROR_AUTHORIZATION_DATA } = require('../utils/constants');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -10,17 +11,13 @@ const userSchema = new mongoose.Schema({
     maxlength: 30,
     required: true,
   },
-
   email: {
     type: String,
     required: true,
     unique: true,
-    validate: {
-      validator: (link) => URL_REGEX.test(link),
-      message: 'Введен некорректный URL',
-    },
-  },
+    validate: [validator.isEmail, ERROR_EMAIL],
 
+  },
   password: {
     type: String,
     required: true,
@@ -28,28 +25,21 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.statics.findUserByCredentials = function (email, password) {
-  return this.findOne({ email })
-    .select('+password')
+userSchema.statics.findUserByCredentials = function findUserByCredentials(email, password) {
+  return this.findOne({ email }).select(PASSWORD_PREFIX)
     .then((user) => {
       if (!user) {
-        return Promise.reject(
-          new UnauthorizedError('Неправильные почта или пароль'),
-        );
+        throw new UnauthorizedError(ERROR_AUTHORIZATION_DATA);
       }
-      return bcrypt
-        .compare(password, user.password)
 
+      return bcrypt.compare(password, user.password)
         .then((matched) => {
           if (!matched) {
-            return Promise.reject(
-              new UnauthorizedError('Неправильные почта или пароль'),
-            );
+            throw new UnauthorizedError(ERROR_AUTHORIZATION_DATA);
           }
-
           return user;
         });
     });
 };
 
-module.exports = mongoose.model('user', userSchema);
+exports.User = mongoose.model('user', userSchema);

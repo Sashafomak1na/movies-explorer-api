@@ -1,9 +1,8 @@
-const reqLimit = require('express-rate-limit');
+const reqLimiter = require('express-rate-limit');
 
-const limit = reqLimit({
+const limiter = reqLimiter({
   max: 160,
   windowMS: 55000,
-  message: 'Превышен лимит запросов повторите попытку через несколько минут',
+  message: 'Приносим свои извинения! Превышен лимит запросов. Рекомендуем повторить попытку через пару минут',
 });
-
-module.exports = limit;
+module.exports = limiter;

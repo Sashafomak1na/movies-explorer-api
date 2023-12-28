@@ -2,23 +2,67 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const { User } = require('../models/user');
-const { SUPER_SECRET_KEY } = require('../utils/secretKey');
+const secretKey = require('../utils/secretKey');
 const UnauthorizedError = require('../errors/unauthorizedError');
 const ConflictError = require('../errors/conflictError');
 const BadRequestError = require('../errors/badRequestError');
 const NotFoundError = require('../errors/notFoundError');
+const {
+  CONFLICT_ERROR,
+  VALIDATION_ERROR,
+  USER_NOT_FOUND,
+  ERROR_USER_ID,
+  ERROR_11000,
+  PASSWORD_PREFIX,
+  CAST_ERROR,
+  USER_EMAIL_EXISTS,
+  ERROR_DATA_UPDATE_USER,
+  ERROR_DATA_CREATE_USER,
+  ERROR_AUTHORIZATION_DATA,
+  AUTHORIZATION,
+} = require('../utils/constants');
 
 const getCurrentUserInfo = (req, res, next) => {
-  User.findById(req.user._id)
+  User.findById(req.user)
     .then((data) => {
       if (!data) {
-        next(new NotFoundError('Пользователь с указанным id не зарегистрирован'));
+        next(new NotFoundError(USER_NOT_FOUND));
       }
       res.send(data);
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new BadRequestError('Передан некорректный id пользователя'));
+      if (err.name === CAST_ERROR) {
+        next(new BadRequestError(ERROR_USER_ID));
+      } else {
+        next(err);
+      }
+    });
+};
+
+const updateUserInfo = (req, res, next) => {
+  const { name, email } = req.body;
+  const userId = req.user;
+  User.findByIdAndUpdate(
+    userId,
+    { name, email },
+    {
+      new: true,
+      runValidators: true,
+      upsert: false,
+    },
+  )
+    .then((user) => {
+      if (!user) {
+        next(new NotFoundError(USER_NOT_FOUND));
+      }
+      res.send(user);
+    })
+    .catch((err) => {
+      if (err.name === CONFLICT_ERROR) {
+        next(new ConflictError(USER_EMAIL_EXISTS));
+      }
+      if (err.name === VALIDATION_ERROR) {
+        next(new BadRequestError(ERROR_DATA_UPDATE_USER));
       } else {
         next(err);
       }
@@ -34,45 +78,17 @@ const createUser = (req, res, next) => {
       email,
       password: hash,
     }))
-    .then((user) => res.status(201).send({
-      data: {
+    .then((user) => res.status(201).send(
+      {
         name: user.name, email: user.email, _id: user.id,
       },
-    }))
+    ))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        next(new BadRequestError('Переданы некорректные данные при создании пользователя'));
+      if (err.name === VALIDATION_ERROR) {
+        next(new BadRequestError(ERROR_DATA_CREATE_USER));
       }
-      if (err.code === 11000) {
-        next(new ConflictError('Пользователь с указанным электронным адресом уже зарегистрирован'));
-      } else {
-        next(err);
-      }
-    });
-};
-
-const updateUserInfo = (req, res, next) => {
-  const { name, about } = req.body;
-  User.findByIdAndUpdate(
-    req.user._id,
-    { name, email },
-    {
-      new: true,
-      runValidators: true,
-      upsert: false,
-    },
-  )
-    .then((user) => {
-      if (user) {
-        res.send(user);
-      }
-      if (!user) {
-        next(new NotFoundError('Пользователь с указанным id не зарегистрирован'));
-      }
-    })
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        next(new BadRequestError('Переданы некорректные данные при обновлении информации о пользователе'));
+      if (err.code === ERROR_11000) {
+        next(new ConflictError(USER_EMAIL_EXISTS));
       } else {
         next(err);
       }
@@ -83,17 +99,17 @@ const login = (req, res, next) => {
   const { email, password } = req.body;
   User
     .findOne({ email })
-    .select('+password')
-    .orFail(() => new UnauthorizedError('Ошибка авторизации'))
+    .select(PASSWORD_PREFIX)
+    .orFail(() => new UnauthorizedError(ERROR_AUTHORIZATION_DATA))
     .then((user) => {
       bcrypt
         .compare(String(password), user.password)
         .then((matched) => {
           if (matched) {
-            const token = jwt.sign({ _id: user._id }, SUPER_SECRET_KEY, { expiresIn: '7d' });
-            return res.status(200).send({ token, message: 'Успешная авторизация' });
+            const token = jwt.sign({ _id: user._id }, secretKey);
+            return res.status(200).send({ token, message: AUTHORIZATION });
           }
-          return next(new UnauthorizedError('Ошибка авторизации'));
+          return next(new UnauthorizedError(ERROR_AUTHORIZATION_DATA));
         });
     })
     .catch(next);
