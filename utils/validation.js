@@ -1,13 +1,15 @@
 const { celebrate, Joi } = require('celebrate');
 const validator = require('validator');
-const { ERROR_URL, PASSWORD_REGEX } = require('./constants');
+const { ERROR_URL } = require('./constants');
 
-const linkValidator = Joi.string().required().custom((value, helpers) => {
-  if (validator.isURL(value)) {
-    return value;
-  }
-  return helpers.message(ERROR_URL);
-});
+const linkValidator = Joi.string()
+  .required()
+  .custom((value, helpers) => {
+    if (validator.isURL(value)) {
+      return value;
+    }
+    return helpers.message(ERROR_URL);
+  });
 
 module.exports.validateChangeUserInfo = celebrate({
   body: Joi.object().keys({
@@ -42,13 +44,15 @@ module.exports.validateCreateUser = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
     email: Joi.string().required().email(),
-    password: Joi.string().required().pattern(PASSWORD_REGEX),
+    // password: Joi.string().required().pattern(PASSWORD_REGEX)
+    password: Joi.string().required(),
   }),
 });
 
 module.exports.validateLogin = celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
-    password: Joi.string().required().pattern(PASSWORD_REGEX),
+    // password: Joi.string().required().pattern(PASSWORD_REGEX)
+    password: Joi.string().required(),
   }),
 });
