@@ -1,6 +1,9 @@
 /* eslint-disable no-console */
 /* eslint-disable max-len */
 const Movie = require('../models/movie');
+const BadRequestError = require('../errors/badRequestError');
+const NotFoundError = require('../errors/notFoundError');
+const ForbiddenError = require('../errors/forbiddenError');
 const {
   FORBIDDEN_DELETE_FILM_ERROR,
   DELET_FILM,
@@ -10,9 +13,6 @@ const {
   ERROR_DATA_DELETE_FILM,
   FILM_NOT_FOUND,
 } = require('../utils/constants');
-const NotFoundError = require('../errors/notFoundError');
-const BadRequestError = require('../errors/badRequestError');
-const ForbiddenError = require('../errors/forbiddenError');
 
 const getAllMovies = (req, res, next) => {
   const owner = req.user;
@@ -23,7 +23,17 @@ const getAllMovies = (req, res, next) => {
 
 const createMovie = (req, res, next) => {
   const {
-    country, director, duration, year, description, image, trailerLink, thumbnail, movieId, nameRU, nameEN,
+    country,
+    director,
+    duration,
+    year,
+    description,
+    image,
+    trailerLink,
+    thumbnail,
+    movieId,
+    nameRU,
+    nameEN,
   } = req.body;
   Movie.create({
     country,
@@ -53,12 +63,10 @@ const createMovie = (req, res, next) => {
 
 const deleteMovie = (req, res, next) => {
   const { id: movieId } = req.params;
-  const userId = req.user;
+  const userId = req.user._id;
 
-  Movie
-    .findById(movieId)
+  Movie.findById(movieId)
     .then((movie) => {
-      console.log(movie);
       if (!movie) throw new NotFoundError(FILM_NOT_FOUND);
       if (!movie.owner.equals(userId)) {
         throw new ForbiddenError(FORBIDDEN_DELETE_FILM_ERROR);

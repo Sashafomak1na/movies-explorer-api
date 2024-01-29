@@ -2,7 +2,11 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const validator = require('validator');
 const UnauthorizedError = require('../errors/unauthorizedError');
-const { PASSWORD_PREFIX, ERROR_EMAIL, ERROR_AUTHORIZATION_DATA } = require('../utils/constants');
+const {
+  ERROR_AUTHORIZATION_DATA,
+  PASSWORD_PREFIX,
+  ERROR_EMAIL,
+} = require('../utils/constants');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -16,7 +20,6 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
     validate: [validator.isEmail, ERROR_EMAIL],
-
   },
   password: {
     type: String,
@@ -26,19 +29,19 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.statics.findUserByCredentials = function findUserByCredentials(email, password) {
-  return this.findOne({ email }).select(PASSWORD_PREFIX)
+  return this.findOne({ email })
+    .select(PASSWORD_PREFIX)
     .then((user) => {
       if (!user) {
         throw new UnauthorizedError(ERROR_AUTHORIZATION_DATA);
       }
 
-      return bcrypt.compare(password, user.password)
-        .then((matched) => {
-          if (!matched) {
-            throw new UnauthorizedError(ERROR_AUTHORIZATION_DATA);
-          }
-          return user;
-        });
+      return bcrypt.compare(password, user.password).then((matched) => {
+        if (!matched) {
+          throw new UnauthorizedError(ERROR_AUTHORIZATION_DATA);
+        }
+        return user;
+      });
     });
 };
 

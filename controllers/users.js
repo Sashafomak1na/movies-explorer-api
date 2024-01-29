@@ -3,16 +3,17 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const { User } = require('../models/user');
 const secretKey = require('../utils/secretKey');
-const UnauthorizedError = require('../errors/unauthorizedError');
-const ConflictError = require('../errors/conflictError');
+
 const BadRequestError = require('../errors/badRequestError');
 const NotFoundError = require('../errors/notFoundError');
+const UnauthorizedError = require('../errors/unauthorizedError');
+const ConflictError = require('../errors/conflictError');
 const {
   CONFLICT_ERROR,
   VALIDATION_ERROR,
   USER_NOT_FOUND,
   ERROR_USER_ID,
-  ERROR_11000,
+  E11000,
   PASSWORD_PREFIX,
   CAST_ERROR,
   USER_EMAIL_EXISTS,
@@ -72,22 +73,15 @@ const updateUserInfo = (req, res, next) => {
 const createUser = (req, res, next) => {
   const { name, email } = req.body;
 
-  bcrypt.hash(req.body.password, 10)
-    .then((hash) => User.create({
-      name,
-      email,
-      password: hash,
-    }))
-    .then((user) => res.status(201).send(
-      {
-        name: user.name, email: user.email, _id: user.id,
-      },
-    ))
+  bcrypt
+    .hash(req.body.password, 10)
+    .then((hash) => User.create({ name, email, password: hash }))
+    .then((user) => res.status(201).send({ name: user.name, email: user.email, id: user.id }))
     .catch((err) => {
       if (err.name === VALIDATION_ERROR) {
         next(new BadRequestError(ERROR_DATA_CREATE_USER));
       }
-      if (err.code === ERROR_11000) {
+      if (err.code === E11000) {
         next(new ConflictError(USER_EMAIL_EXISTS));
       } else {
         next(err);
@@ -97,20 +91,17 @@ const createUser = (req, res, next) => {
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
-  User
-    .findOne({ email })
+  User.findOne({ email })
     .select(PASSWORD_PREFIX)
     .orFail(() => new UnauthorizedError(ERROR_AUTHORIZATION_DATA))
     .then((user) => {
-      bcrypt
-        .compare(String(password), user.password)
-        .then((matched) => {
-          if (matched) {
-            const token = jwt.sign({ _id: user._id }, secretKey);
-            return res.status(200).send({ token, message: AUTHORIZATION });
-          }
-          return next(new UnauthorizedError(ERROR_AUTHORIZATION_DATA));
-        });
+      bcrypt.compare(String(password), user.password).then((matched) => {
+        if (matched) {
+          const token = jwt.sign({ _id: user._id }, secretKey);
+          return res.status(200).send({ token, message: AUTHORIZATION });
+        }
+        return next(new UnauthorizedError(ERROR_AUTHORIZATION_DATA));
+      });
     })
     .catch(next);
 };

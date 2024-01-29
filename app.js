@@ -12,14 +12,18 @@ const route = require('./routes/index');
 const NotFoundError = require('./errors/notFoundError');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const {
+  LOCAL_HOST3000,
+  LOCAL_HOST_HTTP3000,
   LOCAL_HOST,
   LOCAL_HOST_HTTP,
   SERVER_HOST_HTTP,
   SERVER_HOST_HTTPS,
-  PAGE_NOT_FOUND,
-  APP_ON_PORT,
+  FRONTEND_SERVER_HOST_HTTP,
+  FRONTEND_SERVER_HOST_HTTPS,
   CONNECTION_WITH_BD,
   ERROR_CONNECTION_WITH_DB,
+  PAGE_NOT_FOUND,
+  APP_ON_PORT,
 } = require('./utils/constants');
 
 const { PORT, DB_ADRESS } = process.env;
@@ -30,16 +34,23 @@ app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(cors({
-  origin: [
-    LOCAL_HOST,
-    LOCAL_HOST_HTTP,
-    SERVER_HOST_HTTP,
-    SERVER_HOST_HTTPS,
-  ],
-  credentials: true,
-  maxAge: 30,
-}));
+app.use(
+  cors({
+    origin: [
+      LOCAL_HOST3000,
+      LOCAL_HOST_HTTP3000,
+      LOCAL_HOST,
+      LOCAL_HOST_HTTP,
+      SERVER_HOST_HTTP,
+      SERVER_HOST_HTTPS,
+      FRONTEND_SERVER_HOST_HTTP,
+      FRONTEND_SERVER_HOST_HTTPS,
+    ],
+    credentials: true,
+    maxAge: 30,
+  }),
+);
+
 app.use(helmet());
 
 mongoose
