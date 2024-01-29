@@ -31,7 +31,6 @@ app.use(
     origin: [
       'localhost:3000',
       'http://localhost:3000',
-      'localhost:3001',
       'http://localhost:3001',
       'http://api.fsashkaff.nomoredomainsmonster.ru',
       'https://api.fsashkaff.nomoredomainsmonster.ru',
