@@ -6,10 +6,10 @@ const LOCAL_HOST3000 = 'localhost:3000';
 const LOCAL_HOST_HTTP3000 = 'http://localhost:3000';
 const LOCAL_HOST = 'localhost:3001';
 const LOCAL_HOST_HTTP = 'http://localhost:3001';
-const SERVER_HOST_HTTP = 'http://api.fsashkaff.nomoredomainsmonster.ru/';
-const SERVER_HOST_HTTPS = 'https://api.fsashkaff.nomoredomainsmonster.ru/';
-const FRONTEND_SERVER_HOST_HTTP = 'http://fsashkaff.nomoredomainsmonster.ru/';
-const FRONTEND_SERVER_HOST_HTTPS = 'https://fsashkaff.nomoredomainsmonster.ru/';
+const SERVER_HOST_HTTP = 'http://api.fsashkaff.nomoredomainsmonster.ru';
+const SERVER_HOST_HTTPS = 'https://api.fsashkaff.nomoredomainsmonster.ru';
+const FRONTEND_SERVER_HOST_HTTP = 'http://fsashkaff.nomoredomainsmonster.ru';
+const FRONTEND_SERVER_HOST_HTTPS = 'https://fsashkaff.nomoredomainsmonster.ru';
 
 const CONNECTION_WITH_BD = 'Подключено к БД';
 const ERROR_CONNECTION_WITH_DB = 'Ошыбка подкючения к БД';

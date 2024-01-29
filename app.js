@@ -16,31 +16,28 @@ const {
   ERROR_CONNECTION_WITH_DB,
   PAGE_NOT_FOUND,
   APP_ON_PORT,
+  FRONTEND_SERVER_HOST_HTTP,
+  FRONTEND_SERVER_HOST_HTTPS,
 } = require('./utils/constants');
 
 const { PORT, DB_ADRESS } = process.env;
 const app = express();
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
 app.use(
   cors({
     origin: [
-      'localhost:3000',
-      'http://localhost:3000',
-      'http://localhost:3001',
-      'http://api.fsashkaff.nomoredomainsmonster.ru',
-      'https://api.fsashkaff.nomoredomainsmonster.ru',
-      'http://fsashkaff.nomoredomainsmonster.ru',
-      'https://fsashkaff.nomoredomainsmonster.ru',
+      FRONTEND_SERVER_HOST_HTTP,
+      FRONTEND_SERVER_HOST_HTTPS,
     ],
     credentials: true,
     maxAge: 30,
   }),
 );
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(helmet());
 
