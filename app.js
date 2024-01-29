@@ -12,6 +12,10 @@ const route = require('./routes/index');
 const NotFoundError = require('./errors/notFoundError');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const {
+  CONNECTION_WITH_BD,
+  ERROR_CONNECTION_WITH_DB,
+  PAGE_NOT_FOUND,
+  APP_ON_PORT,
   LOCAL_HOST3000,
   LOCAL_HOST_HTTP3000,
   LOCAL_HOST,
@@ -20,10 +24,6 @@ const {
   SERVER_HOST_HTTPS,
   FRONTEND_SERVER_HOST_HTTP,
   FRONTEND_SERVER_HOST_HTTPS,
-  CONNECTION_WITH_BD,
-  ERROR_CONNECTION_WITH_DB,
-  PAGE_NOT_FOUND,
-  APP_ON_PORT,
 } = require('./utils/constants');
 
 const { PORT, DB_ADRESS } = process.env;
