@@ -24,13 +24,14 @@ const {
   SERVER_HOST_HTTPS,
   // FRONTEND_SERVER_HOST_HTTP,
   FRONTEND_SERVER_HOST_HTTPS,
+  PROVERIT,
 } = require('./utils/constants');
 
 const { PORT, DB_ADRESS } = process.env;
 const app = express();
 
 const options = {
-  origin: [SERVER_HOST_HTTPS, FRONTEND_SERVER_HOST_HTTPS],
+  origin: [SERVER_HOST_HTTPS, FRONTEND_SERVER_HOST_HTTPS, PROVERIT],
   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   preflightContinue: false,
   optionsSuccessStatus: 204,
