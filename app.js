@@ -28,6 +28,7 @@ const {
 
 const { PORT, DB_ADRESS } = process.env;
 const app = express();
+app.use(cors(options)); // ПЕРВЫМ!
 
 const options = {
   origin: [LOCAL_HOST_HTTP3000, LOCAL_HOST_HTTP, SERVER_HOST_HTTPS, FRONTEND_SERVER_HOST_HTTPS],
@@ -37,8 +38,6 @@ const options = {
   allowedHeaders: ['Content-Type', 'origin', 'Authorization'],
   credentials: true,
 };
-
-app.use(cors(options)); // ПЕРВЫМ!
 
 // app.use(
 //   cors({
