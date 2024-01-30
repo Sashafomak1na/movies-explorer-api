@@ -32,14 +32,14 @@ const app = express();
 app.use(
   cors({
     origin: [
-      LOCAL_HOST3000,
-      LOCAL_HOST_HTTP3000,
-      LOCAL_HOST,
-      LOCAL_HOST_HTTP,
       SERVER_HOST_HTTP,
       SERVER_HOST_HTTPS,
       FRONTEND_SERVER_HOST_HTTP,
       FRONTEND_SERVER_HOST_HTTPS,
+      LOCAL_HOST3000,
+      LOCAL_HOST_HTTP3000,
+      LOCAL_HOST,
+      LOCAL_HOST_HTTP,
     ],
     credentials: true,
     maxAge: 30,
