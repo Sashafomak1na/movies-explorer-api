@@ -2,11 +2,11 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
 const helmet = require('helmet');
-const { errorHandler } = require('./middlewares/errorHandler');
+const cors = require('cors');
+// const { errorHandler } = require('./middlewares/errorHandler');
 const limiter = require('./middlewares/reqLimit');
 const route = require('./routes/index');
 const NotFoundError = require('./errors/notFoundError');
@@ -82,7 +82,7 @@ app.use((req, res, next) => next(new NotFoundError(PAGE_NOT_FOUND)));
 
 app.use(errorLogger);
 app.use(errors());
-app.use(errorHandler);
+// app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`${APP_ON_PORT} ${PORT}`);
