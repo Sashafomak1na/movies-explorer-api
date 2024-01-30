@@ -17,9 +17,9 @@ const {
   PAGE_NOT_FOUND,
   APP_ON_PORT,
   // LOCAL_HOST3000,
-  LOCAL_HOST_HTTP3000,
+  // LOCAL_HOST_HTTP3000,
   // LOCAL_HOST,
-  LOCAL_HOST_HTTP,
+  // LOCAL_HOST_HTTP,
   // SERVER_HOST_HTTP,
   SERVER_HOST_HTTPS,
   // FRONTEND_SERVER_HOST_HTTP,
@@ -30,7 +30,7 @@ const { PORT, DB_ADRESS } = process.env;
 const app = express();
 
 const options = {
-  origin: [LOCAL_HOST_HTTP3000, LOCAL_HOST_HTTP, SERVER_HOST_HTTPS, FRONTEND_SERVER_HOST_HTTPS],
+  origin: [SERVER_HOST_HTTPS, FRONTEND_SERVER_HOST_HTTPS],
   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   preflightContinue: false,
   optionsSuccessStatus: 204,
