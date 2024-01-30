@@ -10,6 +10,7 @@ const SERVER_HOST_HTTP = 'http://api.fsashkaff.nomoredomainsmonster.ru';
 const SERVER_HOST_HTTPS = 'https://api.fsashkaff.nomoredomainsmonster.ru';
 const FRONTEND_SERVER_HOST_HTTP = 'http://fsashkaff.nomoredomainsmonster.ru';
 const FRONTEND_SERVER_HOST_HTTPS = 'https://fsashkaff.nomoredomainsmonster.ru';
+const PROVERIT = 'https://fsashkaff.nomoredomainsmonster.ru/movies';
 
 const CONNECTION_WITH_BD = 'Подключено к БД';
 const ERROR_CONNECTION_WITH_DB = 'Ошыбка подкючения к БД';
@@ -73,4 +74,5 @@ module.exports = {
   SERVER_HOST_HTTPS,
   FRONTEND_SERVER_HOST_HTTP,
   FRONTEND_SERVER_HOST_HTTPS,
+  PROVERIT,
 };

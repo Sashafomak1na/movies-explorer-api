@@ -16,18 +16,42 @@ const {
   ERROR_CONNECTION_WITH_DB,
   PAGE_NOT_FOUND,
   APP_ON_PORT,
+  LOCAL_HOST3000,
+  LOCAL_HOST_HTTP3000,
+  LOCAL_HOST,
+  LOCAL_HOST_HTTP,
+  SERVER_HOST_HTTP,
+  SERVER_HOST_HTTPS,
   FRONTEND_SERVER_HOST_HTTP,
   FRONTEND_SERVER_HOST_HTTPS,
+  // PROVERIT,
 } = require('./utils/constants');
 
 const { PORT, DB_ADRESS } = process.env;
 const app = express();
 
+// const options = {
+//   origin: [SERVER_HOST_HTTPS, FRONTEND_SERVER_HOST_HTTPS, PROVERIT],
+//   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+//   preflightContinue: false,
+//   optionsSuccessStatus: 204,
+//   allowedHeaders: ['Content-Type', 'origin', 'Authorization'],
+//   credentials: true,
+// };
+
+// app.use(cors(options)); // ПЕРВЫМ!
+
 app.use(
   cors({
     origin: [
+      SERVER_HOST_HTTP,
+      SERVER_HOST_HTTPS,
       FRONTEND_SERVER_HOST_HTTP,
       FRONTEND_SERVER_HOST_HTTPS,
+      LOCAL_HOST3000,
+      LOCAL_HOST_HTTP3000,
+      LOCAL_HOST,
+      LOCAL_HOST_HTTP,
     ],
     credentials: true,
     maxAge: 30,
